@@ -27,7 +27,8 @@ map_styles = ["basic",
 "satellite-streets",
 "streets"]
 
-app = Dash(__name__, external_stylesheets=external_stylesheets)
+
+app = Dash('__name__', external_stylesheets=external_stylesheets, title='California Housing')
 
 
 # App layout
