@@ -11,7 +11,24 @@ numeric_columns = housing.select_dtypes(include=['number']).columns.tolist()
 
 # Initialize the app - incorporate a Dash Bootstrap theme
 external_stylesheets = [dbc.themes.CERULEAN]
+
+map_styles = ["basic",
+"carto-darkmatter",
+"carto-darkmatter-nolabels",
+"carto-positron",
+"carto-positron-nolabels",
+"carto-voyager",
+"carto-voyager-nolabels",
+"dark",
+"light",
+"open-street-map",
+"outdoors",
+"satellite",
+"satellite-streets",
+"streets"]
+
 app = Dash(__name__, external_stylesheets=external_stylesheets)
+
 
 # App layout
 app.layout = dbc.Container([
@@ -44,17 +61,12 @@ className='m-auto d-flex justify-content-center mt-5'),
     dbc.Row([
         dbc.Col([
         html.Div([
-              dcc.Graph(figure=px.scatter_map(
-                  data_frame=housing,
-                    lat=housing['latitude'],
-                    lon=housing['longitude'],
-                    zoom=3,
-                    color=housing['median_house_value'],
-                    size=housing['population'] / 100,
-                    title='California Housing Prices',
-                    height=600
-              ), id='scatter-graph')], className="p-3 bg-light border rounded-3 shadow-sm")
+              dcc.Graph(figure={}, id='scatter-graph'),
+              html.Div([
+                    html.Button("Next Map", id="next-map", n_clicks=0, className="btn btn-primary")], className="d-flex justify-content-center mt-3"),
+              ], className="p-3 bg-light border rounded-3 shadow-sm"),
         ], width=12),
+
     ], className='m-auto d-flex justify-content-center mt-5')
 
 ])
@@ -69,6 +81,24 @@ def update_graph(n_clicks):
     col_chosen = numeric_columns[n_clicks % len(numeric_columns)]  # Ciclar entre columnas
     fig = px.histogram(housing, x=col_chosen)
     return fig
+
+
+@callback(
+    Output('scatter-graph', 'figure'),
+    Input('next-map', 'n_clicks')
+)
+def update_map(n_clicks):
+    return px.scatter_map(
+                  data_frame=housing,
+                    lat=housing['latitude'],
+                    lon=housing['longitude'],
+                    zoom=3,
+                    color=housing['median_house_value'],
+                    size=housing['population'] / 100,
+                    height=600,
+                    map_style=map_styles[n_clicks % len(map_styles)],
+                    title=f'Map style: {map_styles[n_clicks % len(map_styles)]}'
+              )
 
 # Run the app
 if __name__ == '__main__':
