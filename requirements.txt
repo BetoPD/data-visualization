@@ -1,0 +1,8 @@
+# requirements 
+dash
+pandas
+matplotlib
+numpy
+plotly
+scikit-learn
+dash-bootstrap-components
