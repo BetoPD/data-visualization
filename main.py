@@ -36,10 +36,29 @@ app.layout = dbc.Container([
                 html.Div([
                     html.Button("Next Histogram", id="next-btn", n_clicks=0, className="btn btn-primary"),
                 ], 
-            className="d-flex justify-content-center mt-3"),], 
+            className="d-flex justify-content-center mt-3")], 
         className="p-3 bg-light border rounded-3 shadow-sm")], 
     width=6)], 
-className='m-auto d-flex justify-content-center mt-5')])
+className='m-auto d-flex justify-content-center mt-5'),
+    
+    dbc.Row([
+        dbc.Col([
+        html.Div([
+              dcc.Graph(figure=px.scatter_map(
+                  data_frame=housing,
+                    lat=housing['latitude'],
+                    lon=housing['longitude'],
+                    zoom=3,
+                    color=housing['median_house_value'],
+                    size=housing['population'] / 100,
+                    title='California Housing Prices',
+                    height=600
+              ), id='scatter-graph')], className="p-3 bg-light border rounded-3 shadow-sm")
+        ], width=12),
+    ], className='m-auto d-flex justify-content-center mt-5')
+
+])
+
 
 # Add controls to build the interaction
 @callback(
